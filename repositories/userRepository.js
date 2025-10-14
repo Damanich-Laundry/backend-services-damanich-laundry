@@ -20,6 +20,16 @@ class UserRepository {
         return user;
     }
 
+    async updateStatus(id) {
+        const user = await User.findByPk(id);
+        if (!user) return null;
+        console.log(user)
+        await user.update({
+            is_active: !user.is_active,
+        });
+        return user;
+    }
+
     async delete(id) {
         const user = await User.findByPk(id);
         if (!user) return null;

@@ -25,7 +25,7 @@ class UserController {
             const user = await userService.createUser(req.body);
             res.status(201).json(user);
         } catch (err) {
-            res.status(400).json({message: err.message});
+            res.status(400).json(err);
         }
     }
 
@@ -35,7 +35,17 @@ class UserController {
             if (!user) return res.status(404).json({message: "User not found"});
             res.json(user);
         } catch (err) {
-            res.status(400).json({message: err.message});
+            res.status(400).json(err);
+        }
+    }
+
+    async updateStatus(req, res) {
+        try {
+            const user = await userService.updateStatus(req.params.id);
+            if (!user) return res.status(404).json({message: "User not found"});
+            res.json(user);
+        } catch (err) {
+            res.status(400).json(err);
         }
     }
 
