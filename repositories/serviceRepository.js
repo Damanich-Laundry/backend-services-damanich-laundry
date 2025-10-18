@@ -20,7 +20,7 @@ class ServiceRepository {
     return service;
   }
 
-  async Delete(id) {
+  async delete(id) {
     const service = await Service.findByPk(id);
     if (!service) return null;
     await service.destroy();
@@ -34,3 +34,5 @@ class ServiceRepository {
     return service;
   }
 }
+
+module.exports = new ServiceRepository();
