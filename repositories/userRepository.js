@@ -13,6 +13,12 @@ class UserRepository {
         return await User.create(data);
     }
 
+
+    async findByEmail(email) {
+        return await User.findOne({where: {email}});
+    }
+
+
     async update(id, data) {
         const user = await User.findByPk(id);
         if (!user) return null;
