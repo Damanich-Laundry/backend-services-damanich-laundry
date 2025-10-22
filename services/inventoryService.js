@@ -40,7 +40,7 @@ class inventoryService {
     return inventory;
   }
 
-  async createInventoryLog(id, data) {
+  async createRestock(id, data) {
     const { error, value } = createInventoryLogSchema.validate(data);
     if (error) {
       throw handleJoiErrorMessage(error);
@@ -59,3 +59,5 @@ class inventoryService {
     return inventory;
   }
 }
+
+module.exports = new inventoryService();

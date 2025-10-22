@@ -23,7 +23,6 @@ exports.updateInventorySchema = joi.object({
 });
 
 exports.createInventoryLogSchema = joi.object({
-  inventory_id: joi.number().required(),
   type: joi.string().required(),
   quantity: joi.number().required(),
   notes: joi.string(),

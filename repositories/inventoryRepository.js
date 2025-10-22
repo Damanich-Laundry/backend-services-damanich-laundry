@@ -15,6 +15,7 @@ class inventoryRepository {
   }
 
   async update(id, data) {
+    const dateUpdate = new Date();
     const inventory = await Inventory.findByPk(id);
     if (!inventory) return null;
     await inventory.update(data);
@@ -29,10 +30,12 @@ class inventoryRepository {
   }
 
   async createRestock(id, data) {
+    let t;
     try {
-      const t = await sequelize.transaction();
-      const { type, quantity, notes } = data;
+      t = await sequelize.transaction();
+      let { type, quantity, notes } = data;
       const inventoryId = id;
+      type = type.toUpperCase();
 
       const inventory = await Inventory.findByPk(inventoryId, {
         transaction: t,
