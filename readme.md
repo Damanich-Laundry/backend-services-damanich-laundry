@@ -40,19 +40,19 @@ Then, execute:
 
 ```bash
 # Create the database
-npm run db:create
+npm run db-create
 
 # Run migrations (create tables)
-npm run db:migrate
+npm run db-migrate
 
 # Seed the database with initial data
-npm run db:seed
+npm run db-seed
 ```
 
 If you ever want to **reset the database**, you can run:
 
 ```bash
-npm run db:reset
+npm run db-reset
 ```
 
 This will drop, recreate, migrate, and reseed your database.
@@ -74,13 +74,13 @@ Your application should now be running on:
 
 | Command | Description |
 |----------|--------------|
-| `npm run db:create` | Create the database defined in `.env` |
-| `npm run db:drop` | Drop the database |
-| `npm run db:migrate` | Run all migrations (create tables) |
-| `npm run db:migrate:undo` | Undo the last migration |
-| `npm run db:seed` | Run all seeders (insert demo data) |
-| `npm run db:seed:undo` | Undo all seed data |
-| `npm run db:reset` | Drop, create, migrate, and seed the database in one command |
+| `npm run db-create` | Create the database defined in `.env` |
+| `npm run db-drop` | Drop the database |
+| `npm run db-migrate` | Run all migrations (create tables) |
+| `npm run db-migrate:undo` | Undo the last migration |
+| `npm run db-seed` | Run all seeders (insert demo data) |
+| `npm run db-seed-undo` | Undo all seed data |
+| `npm run db-reset` | Drop, create, migrate, and seed the database in one command |
 
 ---
 
