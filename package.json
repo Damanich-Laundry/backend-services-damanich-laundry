@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "",
-  "type": "module",
+  "type": "commonjs",
   "license": "ISC",
   "devDependencies": {
     "jest": "^30.2.0",
