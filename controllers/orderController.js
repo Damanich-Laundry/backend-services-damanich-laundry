@@ -52,6 +52,41 @@ class orderController {
       });
     }
   }
+
+  async create(req, res) {
+    try {
+      const userId = req.user?.id; // pastikan ada user
+      const data = req.body;
+
+      if (!data || Object.keys(data).length === 0) {
+        return res.status(400).json({
+          status: "Failed",
+          message: "Request body cannot be empty",
+          data: null,
+        });
+      }
+
+      const order = await orderService.createOrder(userId, data);
+
+      return res.status(201).json({
+        status: "Success",
+        message: "Order created successfully",
+        data: order,
+      });
+    } catch (error) {
+      const statusCode = error.statusCode || 500;
+      const response = {
+        status: "Failed",
+        message: error.message,
+        data: null,
+      };
+
+      if (error.details) {
+        response.errors = error.details;
+      }
+      return res.status(statusCode).json(response);
+    }
+  }
 }
 
 module.exports = new orderController();
