@@ -35,7 +35,9 @@ class inventoryRepository {
       t = await sequelize.transaction();
       let { type, quantity, notes } = data;
       const inventoryId = id;
-      type = type.toUpperCase();
+
+      // ✅ Pastikan type selalu aman
+      const finalType = typeof type === "string" ? type.toUpperCase() : "OUT";
 
       const inventory = await Inventory.findByPk(inventoryId, {
         transaction: t,
@@ -44,17 +46,18 @@ class inventoryRepository {
         await t.rollback();
         return null;
       }
+
       const inventoryLog = await InventoryLog.create(
         {
           inventory_id: inventoryId,
-          type: type,
+          type: finalType,
           quantity: quantity,
           notes: notes,
         },
         { transaction: t }
       );
 
-      if (type.toUpperCase() === "IN") {
+      if (finalType === "IN") {
         await inventory.increment("quantity", { by: quantity, transaction: t });
       } else {
         await inventory.decrement("quantity", { by: quantity, transaction: t });

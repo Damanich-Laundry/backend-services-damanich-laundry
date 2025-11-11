@@ -1,7 +1,6 @@
 const Joi = require("joi");
 
 const createOrderSchema = Joi.object({
-  // Field yang sudah ada (sesuai logika repo Anda)
   customer_id: Joi.number().integer().required(),
   payment_method: Joi.string().required(),
   estimated_done: Joi.date().optional().allow(null),

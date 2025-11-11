@@ -39,6 +39,13 @@ class orderRepository {
         throw new Error("Customer not found");
       }
 
+      // testtt
+      console.log("🧾 CREATE ORDER DEBUG =>", {
+        status: data.status,
+        payment_status: data.payment_status,
+        payment_method: data.payment_method,
+      });
+
       // Buat order baru
       const order = await Order.create(
         {
@@ -48,9 +55,19 @@ class orderRepository {
           order_date: new Date(),
           estimated_done: data.estimated_done || null,
           pickup_date: data.pickup_date || null,
-          status: data.status || "RECEIVED",
-          payment_status: data.payment_status || "UNPAID",
-          payment_method: data.payment_method,
+          status:
+            typeof data.status === "string"
+              ? data.status.toUpperCase()
+              : "RECEIVED",
+          payment_status:
+            typeof data.payment_status === "string"
+              ? data.payment_status.toUpperCase()
+              : "UNPAID",
+          payment_method:
+            typeof data.payment_method === "string"
+              ? data.payment_method.toUpperCase()
+              : "CASH",
+
           total_weight: data.total_weight || 0,
           discount: data.discount || 0,
           notes: data.notes || null,
@@ -95,6 +112,7 @@ class orderRepository {
           if (!inventory) throw new Error("Inventory not found");
 
           await inventoryRepository.createRestock(
+            invLog.inventory_id,
             {
               order_id: order.id,
               inventory_id: invLog.inventory_id,
@@ -122,6 +140,8 @@ class orderRepository {
       return order;
     } catch (error) {
       await t.rollback();
+      console.error("💥 FULL ERROR STACK:", error);
+      console.error("💥 FULL ERROR TRACE:", error.stack);
       throw error;
     }
   }
