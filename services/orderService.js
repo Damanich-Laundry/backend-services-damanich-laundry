@@ -3,7 +3,7 @@ const userRepository = require("../repositories/userRepository");
 const { createOrderSchema } = require("../validations/orderValidation");
 const { handleJoiErrorMessage } = require("../utils/general");
 
-class orderService {
+class OrderService {
   async getAllOrder() {
     return await orderRepository.findAll();
   }
@@ -13,17 +13,43 @@ class orderService {
   }
 
   async createOrder(userId, data) {
-    // Validasi body pakai Joi
-
     const { error } = createOrderSchema.validate(data, { abortEarly: false });
     if (error) throw handleJoiErrorMessage(error);
 
-    // Ambil user dari repo
     const user = await userRepository.findById(userId);
+    if (!user) throw new Error("User not found");
 
-    // Semua logic create dipindahkan ke repository
     return await orderRepository.createOrder(user, data);
+  }
+
+  async updateOrder(id, data) {
+    const updated = await orderRepository.updateOrder(id, data);
+    if (!updated) throw new Error("Order not found");
+    return updated;
+  }
+
+  async deleteOrder(id) {
+    const deleted = await orderRepository.deleteOrder(id);
+    if (!deleted) throw new Error("Order not found");
+    return deleted;
+  }
+
+  async updateStatus(id, status) {
+    const updated = await orderRepository.updateStatus(id, status);
+    if (!updated) throw new Error("Order not found");
+    return updated;
+  }
+
+  async getInvoice(id) {
+    const order = await orderRepository.getInvoice(id);
+    if (!order) throw new Error("Order not found");
+    return order;
+  }
+
+  async searchOrders(query) {
+    const { status, date } = query;
+    return await orderRepository.searchOrders({ status, date });
   }
 }
 
-module.exports = new orderService();
+module.exports = new OrderService();

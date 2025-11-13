@@ -1,10 +1,121 @@
 const orderService = require("../services/orderService");
 
-class orderController {
+class OrderController {
   async getAll(req, res) {
     try {
       const orders = await orderService.getAllOrder();
-      return res.status(200).json({
+      res.status(200).json({
+        status: "Success",
+        message: "All orders retrieved successfully",
+        data: orders,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failed",
+        message: error.message,
+      });
+    }
+  }
+
+  async getById(req, res) {
+    try {
+      const order = await orderService.getOrderById(req.params.id);
+      if (!order) {
+        return res.status(404).json({
+          status: "Failed",
+          message: "Order not found",
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        message: "Order found",
+        data: order,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failed",
+        message: error.message,
+      });
+    }
+  }
+
+  async create(req, res) {
+    try {
+      const userId = req.user.id; // assumed from JWT
+      const newOrder = await orderService.createOrder(userId, req.body);
+
+      res.status(201).json({
+        status: "Success",
+        message: "Order created successfully",
+        data: newOrder,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "Failed",
+        message: error.message,
+      });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const updated = await orderService.updateOrder(req.params.id, req.body);
+      res.status(200).json({
+        status: "Success",
+        message: "Order updated successfully",
+        data: updated,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "Failed", message: error.message });
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const deleted = await orderService.deleteOrder(req.params.id);
+      res.status(200).json({
+        status: "Success",
+        message: "Order deleted successfully",
+        data: deleted,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "Failed", message: error.message });
+    }
+  }
+
+  async updateStatus(req, res) {
+    try {
+      const updated = await orderService.updateStatus(
+        req.params.id,
+        req.body.status
+      );
+      res.status(200).json({
+        status: "Success",
+        message: "Order status updated successfully",
+        data: updated,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "Failed", message: error.message });
+    }
+  }
+
+  async getInvoice(req, res) {
+    try {
+      const invoice = await orderService.getInvoice(req.params.id);
+      res.status(200).json({
+        status: "Success",
+        message: "Invoice retrieved successfully",
+        data: invoice,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "Failed", message: error.message });
+    }
+  }
+
+  async search(req, res) {
+    try {
+      const orders = await orderService.searchOrders(req.query);
+      res.status(200).json({
         status: "Success",
         message: "Orders found",
         data: orders,
@@ -13,80 +124,9 @@ class orderController {
       res.status(500).json({
         status: "Failed",
         message: error.message,
-        data: null,
       });
-    }
-  }
-
-  async getById(req, res) {
-    try {
-      const id = req.params.id;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({
-          status: "Failed",
-          message: "Invalid or missing inventory ID",
-          data: null,
-        });
-      }
-
-      const order = await orderService.getOrderById(id);
-
-      if (!order) {
-        return res.status(404).json({
-          status: "Failed",
-          message: "Order with this id is not found",
-          data: null,
-        });
-      }
-
-      return res.status(200).json({
-        status: "Success",
-        message: "Order found in this id",
-        data: order,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "Failed",
-        message: error.message,
-        data: null,
-      });
-    }
-  }
-
-  async create(req, res) {
-    try {
-      const userId = req.user?.id; // pastikan ada user
-      const data = req.body;
-
-      if (!data || Object.keys(data).length === 0) {
-        return res.status(400).json({
-          status: "Failed",
-          message: "Request body cannot be empty",
-          data: null,
-        });
-      }
-
-      const order = await orderService.createOrder(userId, data);
-
-      return res.status(201).json({
-        status: "Success",
-        message: "Order created successfully",
-        data: order,
-      });
-    } catch (error) {
-      const statusCode = error.statusCode || 500;
-      const response = {
-        status: "Failed",
-        message: error.message,
-        data: null,
-      };
-
-      if (error.details) {
-        response.errors = error.details;
-      }
-      return res.status(statusCode).json(response);
     }
   }
 }
 
-module.exports = new orderController();
+module.exports = new OrderController();
