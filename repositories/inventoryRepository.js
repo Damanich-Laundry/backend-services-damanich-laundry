@@ -15,7 +15,6 @@ class inventoryRepository {
   }
 
   async update(id, data) {
-    const dateUpdate = new Date();
     const inventory = await Inventory.findByPk(id);
     if (!inventory) return null;
     await inventory.update(data);
@@ -29,48 +28,47 @@ class inventoryRepository {
     return inventory;
   }
 
-  async createRestock(id, data) {
-    let t;
+  /**
+   * Buat log restock atau pemakaian bahan
+   * Bisa dipanggil dari:
+   * - endpoint manual `/api/inventory/:id/restock`
+   * - orderRepository (otomatis saat create order)
+   */
+  async createRestock(id, data, options = {}) {
+    const t = options.transaction || (await sequelize.transaction());
     try {
-      t = await sequelize.transaction();
-      let { type, quantity, notes } = data;
-      const inventoryId = id;
-      type = type.toUpperCase();
+      const inventory = await Inventory.findByPk(id, { transaction: t });
+      if (!inventory) throw new Error(`Inventory not found (id: ${id})`);
 
-      const inventory = await Inventory.findByPk(inventoryId, {
-        transaction: t,
-      });
-      if (!inventory) {
-        await t.rollback();
-        return null;
-      }
+      const { type = "OUT", quantity, notes, order_id = null } = data;
+      const finalType = type.toUpperCase();
+
+      // 🧾 Buat log stok
       const inventoryLog = await InventoryLog.create(
         {
-          inventory_id: inventoryId,
-          type: type,
-          quantity: quantity,
-          notes: notes,
+          inventory_id: id,
+          order_id,
+          type: finalType,
+          quantity,
+          notes,
         },
         { transaction: t }
       );
 
-      if (type.toUpperCase() === "IN") {
+      // 🔁 Update stok fisik
+      if (finalType === "IN") {
         await inventory.increment("quantity", { by: quantity, transaction: t });
       } else {
         await inventory.decrement("quantity", { by: quantity, transaction: t });
       }
 
-      await inventory.update(
-        {
-          last_restock: new Date(),
-        },
-        { transaction: t }
-      );
+      // 🕒 Update tanggal restock terakhir
+      await inventory.update({ last_restock: new Date() }, { transaction: t });
 
-      await t.commit();
+      if (!options.transaction) await t.commit();
       return inventoryLog;
     } catch (error) {
-      if (t) await t.rollback();
+      if (!options.transaction) await t.rollback();
       throw error;
     }
   }
@@ -78,18 +76,14 @@ class inventoryRepository {
   async findLowStock() {
     return await Inventory.findAll({
       where: {
-        quantity: {
-          [Op.lt]: 5,
-        },
+        quantity: { [Op.lt]: 5 },
       },
     });
   }
 
   async findInventoryLogs(id) {
     return await InventoryLog.findAll({
-      where: {
-        inventory_id: id,
-      },
+      where: { inventory_id: id },
     });
   }
 }
