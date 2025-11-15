@@ -49,7 +49,9 @@ class UserService {
     }
 
     async updateStatus(id) {
-        return await userRepository.updateStatus(id);
+        let user = await userRepository.updateStatus(id);
+        if (!user) throw new Error("User not found");
+        return user;
     }
 
     async deleteUser(id) {

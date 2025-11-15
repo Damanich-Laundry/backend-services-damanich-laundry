@@ -11,11 +11,22 @@ module.exports = {
       },
       amount: { type: Sequelize.FLOAT, allowNull: false },
       payment_method: { type: Sequelize.STRING },
-      payment_date: { type: Sequelize.DATE },
-      status: { type: Sequelize.STRING },
+      payment_date: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+      status: {
+        type: Sequelize.ENUM("PENDING", "SUCCESS", "FAILED"),
+        defaultValue: "PENDING",
+      },
       notes: { type: Sequelize.TEXT },
-      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
-      updated_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },
     });
   },
   async down(queryInterface) {
