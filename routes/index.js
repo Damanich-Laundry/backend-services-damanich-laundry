@@ -14,7 +14,6 @@ router.use("/users", userRoutes);
 router.use("/services", serviceRoutes);
 router.use("/inventory", inventoryRoutes);
 router.use("/orders", orderRoutes);
-const authRoutes = require("./authRoute");
 
 router.use("/users", userRoutes);
 router.use("/services", serviceRoutes);
