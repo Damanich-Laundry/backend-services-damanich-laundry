@@ -2,21 +2,25 @@ const bcrypt = require("bcryptjs");
 const userRepository = require("../repositories/userRepository");
 const {generateTokens, verifyRefreshToken} = require("../utils/jwt");
 const {handleJoiErrorMessage} = require("../utils/general");
+const {loginUserSchema} = require("../validations/authValidation");
+const {ValidationError, AuthenticationError, NotFoundError} = require("../exceptions/errors");
 
 class AuthService {
     async login({email, password}) {
+        const {error, value} = loginUserSchema.validate({email, password}, {abortEarly: false});
+        if (error) {
+            throw new ValidationError(error); // kirim ke global error handler
+        }
         const user = await userRepository.findByEmail(email);
         if (!user) {
-            const err = new Error("Invalid email or password");
-            err.statusCode = 401;
-            throw err;
+            throw new AuthenticationError("Invalid email or password");
+
         }
 
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
-            const err = new Error("Invalid email or password");
-            err.statusCode = 401;
-            throw err;
+            throw new AuthenticationError("Invalid email or password");
+
         }
 
         const payload = {id: user.id, email: user.email, role: user.role};
@@ -29,26 +33,18 @@ class AuthService {
     }
 
     async refreshToken(refreshToken) {
-        try {
-            const decoded = verifyRefreshToken(refreshToken);
-            const user = await userRepository.findById(decoded.id);
-            if (!user) throw new Error("User not found");
+        const decoded = verifyRefreshToken(refreshToken);
+        const user = await userRepository.findById(decoded.id);
+        if (!user) throw new AuthenticationError("Invalid refresh token");
 
-            const payload = {id: user.id, email: user.email, role: user.role};
-            return generateTokens(payload);
-        } catch (err) {
-            const error = new Error("Invalid refresh token");
-            error.statusCode = 401;
-            throw error;
-        }
+        const payload = {id: user.id, email: user.email, role: user.role};
+        return generateTokens(payload);
     }
 
     async getProfile(userId) {
         const user = await userRepository.findById(userId);
         if (!user) {
-            const err = new Error("User not found");
-            err.statusCode = 404;
-            throw err;
+            throw NotFoundError("User not found");
         }
         return user;
     }
@@ -56,9 +52,7 @@ class AuthService {
     async changePassword(userId, oldPassword, newPassword) {
         const user = await userRepository.findById(userId);
         if (!user) {
-            const err = new Error("User not found");
-            err.statusCode = 404;
-            throw err;
+            throw NotFoundError("User not found");
         }
 
         const match = await bcrypt.compare(oldPassword, user.password_hash);

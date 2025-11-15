@@ -4,10 +4,11 @@ const { sequelize } = require("../models");
 
 const userRoutes = require("./userRoute");
 const serviceRoutes = require("./serviceRoute");
+const authRoutes = require("./authRoute");
 
-// Gunakan prefix "/users" untuk semua endpoint user
 router.use("/users", userRoutes);
 router.use("/services", serviceRoutes);
+router.use("/authentications", authRoutes);
 
 // Endpoint ping
 router.get("/ping", (req, res) => {
