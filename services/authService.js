@@ -20,7 +20,11 @@ class AuthService {
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
             throw new AuthenticationError("Invalid email or password");
+        }
 
+        console.log(user);
+        if (!user.is_active) {
+            throw new AuthenticationError("User is not active");
         }
 
         const payload = {id: user.id, email: user.email, role: user.role};
@@ -41,13 +45,7 @@ class AuthService {
         return generateTokens(payload);
     }
 
-    async getProfile(userId) {
-        const user = await userRepository.findById(userId);
-        if (!user) {
-            throw NotFoundError("User not found");
-        }
-        return user;
-    }
+
 
     async changePassword(userId, oldPassword, newPassword) {
         const user = await userRepository.findById(userId);

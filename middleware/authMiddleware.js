@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const {AuthenticationError} = require("../exceptions/errors");
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 exports.authMiddleware = (req, res, next) => {
@@ -12,6 +13,6 @@ exports.authMiddleware = (req, res, next) => {
         req.user = jwt.verify(token, JWT_SECRET); // simpan info user di request
         next();
     } catch (err) {
-        res.status(401).json({message: "Invalid or expired token"});
+        throw new AuthenticationError("Invalid or expired token");
     }
 };

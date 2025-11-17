@@ -4,4 +4,4 @@ module.exports = async (req, res, next) => {
     message: "Failed, API not found",
     data: null,
   });
-};
+}

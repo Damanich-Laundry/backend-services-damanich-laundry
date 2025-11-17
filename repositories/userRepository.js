@@ -10,7 +10,7 @@ class UserRepository {
     }
 
     async create(data) {
-        return await User.create(data);
+        return User.create(data);
     }
 
 

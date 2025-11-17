@@ -1,6 +1,8 @@
 const {AppError} = require("../exceptions/errors");
 
 function errorMiddleware(err, req, res, next) {
+    console.error(err);
+    
     if (!(err instanceof AppError)) {
         console.error(err); // log error internal
         err = new AppError("Internal Server Error", 500);
