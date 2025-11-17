@@ -32,26 +32,6 @@ class AuthController {
         }
     }
 
-    // GET /api/auth/me
-    async getProfile(req, res, next) {
-        try {
-            const user = await authService.getProfile(req.user.id);
-            res.status(200).json(user);
-        } catch (err) {
-            next(err);
-        }
-    }
-
-    // PUT /api/auth/change-password
-    async changePassword(req, res, next) {
-        try {
-            const {oldPassword, newPassword} = req.body;
-            const result = await authService.changePassword(req.user.id, oldPassword, newPassword);
-            res.status(200).json(result);
-        } catch (err) {
-            next(err);
-        }
-    }
 }
 
 module.exports = new AuthController();
