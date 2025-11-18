@@ -1,11 +1,11 @@
 const bcrypt = require("bcryptjs");
 const userRepository = require("../repositories/userRepository");
 const {createUserSchema, updateUserSchema} = require("../validations/userValidation");
-const {handleJoiErrorMessage, handleSequelizeError} = require("../utils/general");
-const {NotFoundError, ValidationError} = require("../exceptions/errors");
-const validator = require("./ValidationService"); // instance
+const {handleSequelizeError} = require("../utils/general");
+const {NotFoundError} = require("../exceptions/errors");
+const validator = require("./validationUsecase"); // instance
 
-class UserService {
+class UserUsecase {
     constructor({validator}) {
         this.validator = validator;
     }
@@ -73,4 +73,4 @@ class UserService {
     }
 }
 
-module.exports = new UserService({validator}); // inject dependency sebagai object
+module.exports = new UserUsecase({validator}); // inject dependency sebagai object

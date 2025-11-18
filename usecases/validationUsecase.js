@@ -1,6 +1,6 @@
 const {ValidationError} = require("../exceptions/errors");
 
-class ValidationService {
+class ValidationUsecase {
     validateSchema(schema, data) {
         let {error, value} = schema.validate(data, {abortEarly: false})
         if (error) {
@@ -10,4 +10,4 @@ class ValidationService {
     }
 }
 
-module.exports = new ValidationService();
+module.exports = new ValidationUsecase();

@@ -3,9 +3,9 @@ const customerRepository = require("../repositories/customerRepository");
 const {createCustomerSchema, updateCustomerSchema} = require("../validations/customerValidation");
 const {handleJoiErrorMessage} = require("../utils/general");
 const {NotFoundError} = require("../exceptions/errors");
-const validator = require("./ValidationService"); // instance
+const validator = require("./validationUsecase"); // instance
 
-class CustomerService {
+class CustomerUsecase {
     constructor({validator}) {
         this.validator = validator;
     }
@@ -48,4 +48,4 @@ class CustomerService {
     }
 }
 
-module.exports = new CustomerService({validator});
+module.exports = new CustomerUsecase({validator});

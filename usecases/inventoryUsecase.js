@@ -6,7 +6,7 @@ const {
 } = require("../validations/inventoryValidation");
 const { handleJoiErrorMessage } = require("../utils/general");
 
-class inventoryService {
+class inventoryUsecase {
   async getAllInventory() {
     const inventories = await inventoryRepository.findAll();
     return inventories;
@@ -60,4 +60,4 @@ class inventoryService {
   }
 }
 
-module.exports = new inventoryService();
+module.exports = new inventoryUsecase();

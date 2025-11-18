@@ -6,7 +6,7 @@ const {
 
 const { handleJoiErrorMessage } = require("../utils/general");
 
-class ServiceService {
+class ServiceUsecase {
   async getAllService() {
     return await servicerRepository.findAll();
   }
@@ -56,4 +56,4 @@ class ServiceService {
   }
 }
 
-module.exports = new ServiceService();
+module.exports = new ServiceUsecase();

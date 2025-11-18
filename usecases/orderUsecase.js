@@ -3,7 +3,7 @@ const userRepository = require("../repositories/userRepository");
 const { createOrderSchema } = require("../validations/orderValidation");
 const { handleJoiErrorMessage } = require("../utils/general");
 
-class OrderService {
+class OrderUsecase {
   async getAllOrder() {
     return await orderRepository.findAll();
   }
@@ -52,4 +52,4 @@ class OrderService {
   }
 }
 
-module.exports = new OrderService();
+module.exports = new OrderUsecase();
