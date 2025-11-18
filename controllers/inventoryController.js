@@ -1,9 +1,9 @@
-const inventoryService = require("../services/inventoryService");
+const inventoryUsecase = require("../usecases/inventoryUsecase");
 
 class inventoryController {
   async getAll(req, res) {
     try {
-      const inventories = await inventoryService.getAllInventory();
+      const inventories = await inventoryUsecase.getAllInventory();
       return res.status(200).json({
         status: "Success",
         message: "Inventories found",
@@ -29,7 +29,7 @@ class inventoryController {
         });
       }
 
-      const inventory = await inventoryService.getInventoryById(id);
+      const inventory = await inventoryUsecase.getInventoryById(id);
 
       if (!inventory) {
         return res.status(404).json({
@@ -61,7 +61,7 @@ class inventoryController {
 
   async create(req, res) {
     try {
-      const inventori = await inventoryService.createInventory(req.body);
+      const inventori = await inventoryUsecase.createInventory(req.body);
       return res.status(201).json({
         status: "Success",
         message: "Inventory created successfully",
@@ -93,7 +93,7 @@ class inventoryController {
         });
       }
 
-      const updatedInventory = await inventoryService.updateInventory(
+      const updatedInventory = await inventoryUsecase.updateInventory(
         id,
         req.body
       );
@@ -135,7 +135,7 @@ class inventoryController {
           data: null,
         });
       }
-      const deletedInventory = await inventoryService.deleteInventory(id);
+      const deletedInventory = await inventoryUsecase.deleteInventory(id);
       if (!deletedInventory) {
         return res.status(404).json({
           status: "Failed",
@@ -173,7 +173,7 @@ class inventoryController {
           data: null,
         });
       }
-      const stock = await inventoryService.createRestock(inventoryId, req.body);
+      const stock = await inventoryUsecase.createRestock(inventoryId, req.body);
       if (!stock) {
         return res.status(404).json({
           status: "Failed",
@@ -203,7 +203,7 @@ class inventoryController {
 
   async getLowStock(req, res) {
     try {
-      const lowStock = await inventoryService.getLowStock();
+      const lowStock = await inventoryUsecase.getLowStock();
       return res.status(200).json({
         status: "Success",
         message: "Low stock found",
@@ -227,7 +227,7 @@ class inventoryController {
   async getLogByInventoryId(req, res) {
     try {
       const inventoryId = req.params.id;
-      const checkId = await inventoryService.getInventoryById(inventoryId);
+      const checkId = await inventoryUsecase.getInventoryById(inventoryId);
       if (!checkId) {
         return res.status(404).json({
           status: "Failed",
@@ -236,7 +236,7 @@ class inventoryController {
         });
       }
 
-      const log = await inventoryService.getInventoryLogs(inventoryId);
+      const log = await inventoryUsecase.getInventoryLogs(inventoryId);
       return res.status(200).json({
         status: "Success",
         message: "Log found",

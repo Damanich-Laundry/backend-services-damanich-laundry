@@ -1,9 +1,9 @@
-const orderService = require("../services/orderService");
+const orderUsecase = require("../usecases/orderUsecase");
 
 class OrderController {
   async getAll(req, res) {
     try {
-      const orders = await orderService.getAllOrder();
+      const orders = await orderUsecase.getAllOrder();
       res.status(200).json({
         status: "Success",
         message: "All orders retrieved successfully",
@@ -19,7 +19,7 @@ class OrderController {
 
   async getById(req, res) {
     try {
-      const order = await orderService.getOrderById(req.params.id);
+      const order = await orderUsecase.getOrderById(req.params.id);
       if (!order) {
         return res.status(404).json({
           status: "Failed",
@@ -42,7 +42,7 @@ class OrderController {
   async create(req, res) {
     try {
       const userId = req.user.id; // assumed from JWT
-      const newOrder = await orderService.createOrder(userId, req.body);
+      const newOrder = await orderUsecase.createOrder(userId, req.body);
 
       res.status(201).json({
         status: "Success",
@@ -59,7 +59,7 @@ class OrderController {
 
   async update(req, res) {
     try {
-      const updated = await orderService.updateOrder(req.params.id, req.body);
+      const updated = await orderUsecase.updateOrder(req.params.id, req.body);
       res.status(200).json({
         status: "Success",
         message: "Order updated successfully",
@@ -72,7 +72,7 @@ class OrderController {
 
   async delete(req, res) {
     try {
-      const deleted = await orderService.deleteOrder(req.params.id);
+      const deleted = await orderUsecase.deleteOrder(req.params.id);
       res.status(200).json({
         status: "Success",
         message: "Order deleted successfully",
@@ -85,7 +85,7 @@ class OrderController {
 
   async updateStatus(req, res) {
     try {
-      const updated = await orderService.updateStatus(
+      const updated = await orderUsecase.updateStatus(
         req.params.id,
         req.body.status
       );
@@ -101,7 +101,7 @@ class OrderController {
 
   async getInvoice(req, res) {
     try {
-      const invoice = await orderService.getInvoice(req.params.id);
+      const invoice = await orderUsecase.getInvoice(req.params.id);
       res.status(200).json({
         status: "Success",
         message: "Invoice retrieved successfully",
@@ -114,7 +114,7 @@ class OrderController {
 
   async search(req, res) {
     try {
-      const orders = await orderService.searchOrders(req.query);
+      const orders = await orderUsecase.searchOrders(req.query);
       res.status(200).json({
         status: "Success",
         message: "Orders found",
