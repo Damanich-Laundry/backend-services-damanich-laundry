@@ -5,10 +5,14 @@ const { asyncHandler } = require("../utils/general");
 const isStaff = require("../middleware/isStaff");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
-router.get("/", orderController.getAll);
-router.get("/search", asyncHandler(orderController.search));
-router.get("/:id", orderController.getById);
-router.get("/:id/invoice", asyncHandler(orderController.getInvoice));
+router.get("/", authMiddleware, orderController.getAll);
+router.get("/search", authMiddleware, asyncHandler(orderController.search));
+router.get("/:id", authMiddleware, orderController.getById);
+router.get(
+  "/:id/invoice",
+  authMiddleware,
+  asyncHandler(orderController.getInvoice)
+);
 
 router.post("/", authMiddleware, isStaff, asyncHandler(orderController.create));
 router.patch(
