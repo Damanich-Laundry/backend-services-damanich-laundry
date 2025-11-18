@@ -1,9 +1,9 @@
-const serviceService = require("../services/serviceService");
+const serviceUsecase = require("../usecases/serviceUsecase");
 
 class serviceController {
   async getAll(req, res) {
     try {
-      const services = await serviceService.getAllService();
+      const services = await serviceUsecase.getAllService();
       res.json({
         status: "Success",
         message: "Services found",
@@ -28,7 +28,7 @@ class serviceController {
           data: null,
         });
       }
-      const service = await serviceService.getServiceById(id);
+      const service = await serviceUsecase.getServiceById(id);
       if (!service) {
         return res.status(404).json({
           status: "Failed",
@@ -58,7 +58,7 @@ class serviceController {
 
   async create(req, res) {
     try {
-      const service = await serviceService.createService(req.body);
+      const service = await serviceUsecase.createService(req.body);
       res.status(201).json({
         status: "Success",
         message: "Service created",
@@ -89,7 +89,7 @@ class serviceController {
           data: null,
         });
       }
-      const updatedService = await serviceService.updateService(id, req.body);
+      const updatedService = await serviceUsecase.updateService(id, req.body);
       if (!updatedService) {
         return res.status(404).json({
           status: "Failed",
@@ -128,7 +128,7 @@ class serviceController {
         });
       }
 
-      const deletedService = await serviceService.deleteService(id);
+      const deletedService = await serviceUsecase.deleteService(id);
       if (!deletedService) {
         return res.status(404).json({
           status: "Failed",
@@ -167,7 +167,7 @@ class serviceController {
           data: null,
         });
       }
-      const updatedService = await serviceService.updateStatus(id);
+      const updatedService = await serviceUsecase.updateStatus(id);
       if (!updatedService) {
         return res.status(404).json({
           status: "Failed",

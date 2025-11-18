@@ -1,10 +1,10 @@
-const authService = require("../services/authService");
+const authUsecase = require("../usecases/authUsecase");
 
 class AuthController {
     // POST /api/auth/login
     async login(req, res, next) {
         try {
-            const result = await authService.login(req.body);
+            const result = await authUsecase.login(req.body);
             res.status(200).json(result);
         } catch (err) {
             next(err);
@@ -14,7 +14,7 @@ class AuthController {
     // POST /api/auth/logout
     async logout(req, res, next) {
         try {
-            const result = await authService.logout();
+            const result = await authUsecase.logout();
             res.status(200).json(result);
         } catch (err) {
             next(err);
@@ -25,7 +25,7 @@ class AuthController {
     async refreshToken(req, res, next) {
         try {
             const {refreshToken} = req.body;
-            const tokens = await authService.refreshToken(refreshToken);
+            const tokens = await authUsecase.refreshToken(refreshToken);
             res.status(200).json(tokens);
         } catch (err) {
             next(err);
