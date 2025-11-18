@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { sequelize } = require("../models");
+const {sequelize} = require("../models");
 
 const authRoutes = require("./authRoute");
 const userRoutes = require("./userRoute");
 const serviceRoutes = require("./serviceRoute");
 const inventoryRoutes = require("./inventoryRoute");
 const orderRoutes = require("./orderRoute");
+const customerRoutes = require("./customerRoute");
 
 // Gunakan prefix "/users" untuk semua endpoint user
 router.use("/auth", authRoutes);
@@ -14,6 +15,7 @@ router.use("/users", userRoutes);
 router.use("/services", serviceRoutes);
 router.use("/inventory", inventoryRoutes);
 router.use("/orders", orderRoutes);
+router.use("/customers", customerRoutes);
 
 router.use("/users", userRoutes);
 router.use("/services", serviceRoutes);
@@ -21,7 +23,7 @@ router.use("/authentications", authRoutes);
 
 // Endpoint ping
 router.get("/ping", (req, res) => {
-    res.json({ status: "ok", message: "pong" });
+    res.json({status: "ok", message: "pong"});
 });
 
 // Endpoint cek DB

@@ -9,10 +9,7 @@ module.exports = {
         dialect: process.env.DB_DIALECT,
         port: process.env.DB_PORT,
         dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
+            ssl: false
         }
     },
 
@@ -24,10 +21,7 @@ module.exports = {
         dialect: process.env.DB_DIALECT,
         port: process.env.DB_PORT,
         dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
+            ssl: false
         }
     },
 
@@ -39,10 +33,7 @@ module.exports = {
         dialect: process.env.DB_DIALECT,
         port: process.env.DB_PORT,
         dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
+            ssl: false
         }
     }
 };

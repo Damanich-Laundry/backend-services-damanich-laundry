@@ -1,49 +1,41 @@
 const bcrypt = require("bcryptjs");
 const customerRepository = require("../repositories/customerRepository");
-const {createCustomerSchema, updateCustomerSchema} = require("../validations/userValidation");
+const {createCustomerSchema, updateCustomerSchema} = require("../validations/customerValidation");
 const {handleJoiErrorMessage} = require("../utils/general");
+const {NotFoundError} = require("../exceptions/errors");
+const validator = require("./ValidationService"); // instance
 
 class CustomerService {
+    constructor({validator}) {
+        this.validator = validator;
+    }
+
     async getAllCustomers() {
         return await customerRepository.findAll();
     }
 
     async getCustomerById(id) {
         const user = await customerRepository.findById(id);
-        if (!user) throw new Error("Customer not found");
+        if (!user) throw new NotFoundError("Customer not found");
         return user;
     }
 
     async createCustomer(data) {
         // 🔹 Validasi di layer service
-        const {error, value} = createCustomerSchema.validate(data);
-        console.log(error, value);
-        if (error) {
-            throw handleJoiErrorMessage(error);
-        }
+        const value = this.validator.validateSchema(createCustomerSchema, data);
 
-        // 🔹 Hash password
-        const hashedPassword = await bcrypt.hash(value.password, 10);
-        const userData = {...value, password_hash: hashedPassword};
-        delete userData.password;
-
-        return await customerRepository.create(userData);
+        return await customerRepository.create(value);
     }
 
     async updateCustomer(id, data) {
         // 🔹 Validasi dulu
         const {error, value} = updateCustomerSchema.validate(data);
-        if (error) throw new Error(error.details[0].message);
+        if (error) handleJoiErrorMessage(error);
 
-        // 🔹 Password (optional)
-        if (value.password) {
-            value.password_hash = await bcrypt.hash(value.password, 10);
-            delete value.password;
-        }
 
         // 🔹 Update ke DB
         const updated = await customerRepository.update(id, value);
-        if (!updated) throw new Error("Customer not found");
+        if (!updated) throw new NotFoundError("Customer not found");
 
         return updated;
     }
@@ -51,9 +43,9 @@ class CustomerService {
 
     async deleteCustomer(id) {
         const deleted = await customerRepository.delete(id);
-        if (!deleted) throw new Error("Customer not found");
+        if (!deleted) throw new NotFoundError("Customer not found");
         return deleted;
     }
 }
 
-module.exports = new CustomerService();
+module.exports = new CustomerService({validator});

@@ -15,7 +15,7 @@ class CustomerRepository {
     }
 
     async create(data) {
-        return await Customer.create(data);
+        return Customer.create(data);
     }
 
 

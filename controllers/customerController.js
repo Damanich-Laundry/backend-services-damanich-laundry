@@ -1,52 +1,50 @@
 const customerService = require("../services/customerService");
+const {successResponse, errorResponse} = require("../utils/responseHelpers");
 
 class CustomerController {
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             const customers = await customerService.getAllCustomers();
-            res.json(customers);
+            return successResponse(res, "Customers fetched successfully", customers);
         } catch (err) {
-            res.status(500).json({message: err.message});
+            next(err);
         }
     }
 
-    async getById(req, res) {
+    async getById(req, res, next) {
         try {
             const customer = await customerService.getCustomerById(req.params.id);
-            if (!customer) return res.status(404).json({message: "Customer not found"});
-            res.json(customer);
+            return successResponse(res, "Customers fetched successfully", customer);
         } catch (err) {
-            res.status(500).json({message: err.message});
+            next(err);
         }
     }
 
-    async create(req, res) {
+    async create(req, res, next) {
         try {
             const customer = await customerService.createCustomer(req.body);
-            res.status(201).json(customer);
+            return successResponse(res, null, customer, 201);
         } catch (err) {
-            res.status(400).json(err);
+            next(err);
         }
     }
 
-    async update(req, res) {
+    async update(req, res, next) {
         try {
             const customer = await customerService.updateCustomer(req.params.id, req.body);
-            if (!customer) return res.status(404).json({message: "Customer not found"});
-            res.json(customer);
+            return successResponse(res, null, customer);
         } catch (err) {
-            res.status(400).json(err);
+            next(err);
         }
     }
 
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const customer = await customerService.deleteCustomer(req.params.id);
-            if (!customer) return res.status(404).json({message: "Customer not found"});
-            res.json({message: "Customer deleted successfully"});
+            return successResponse(res, null, customer);
         } catch (err) {
-            res.status(500).json({message: err.message});
+            next(err);
         }
     }
 }

@@ -5,17 +5,6 @@ function asyncHandler(fn) {
     };
 }
 
-function handleJoiErrorMessage(joiError) {
-    const messages = joiError.details.map((err) => ({
-        field: err.path.join("."),
-        message: err.message.replace(/"/g, ""), // gunakan err, bukan d
-    }));
-
-    const errObj = new Error("Validation failed");
-    errObj.statusCode = 400;
-    errObj.details = messages;
-    return errObj;
-}
 
 
 const {
@@ -59,4 +48,4 @@ function handleSequelizeError(err) {
 
 module.exports = handleSequelizeError;
 
-module.exports = {asyncHandler, handleJoiErrorMessage, handleSequelizeError};
+module.exports = {asyncHandler, handleSequelizeError};
