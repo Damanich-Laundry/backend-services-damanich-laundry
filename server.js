@@ -12,7 +12,11 @@ const errorMiddleware = require("./middleware/errorMiddleware");
 const expressListEndpoints = require("express-list-endpoints");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
