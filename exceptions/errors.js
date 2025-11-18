@@ -13,7 +13,7 @@ class ValidationError extends AppError {
     constructor(joiError) {
         const details = joiError?.details?.map((d) => ({
             field: d.path.join("."),
-            message: d.message,
+            message: d.message.replace(/"/g, ""), // gunakan err, bukan d
         })) || null;
 
         super("Validation failed", 400, details);

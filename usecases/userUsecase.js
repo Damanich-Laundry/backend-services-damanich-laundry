@@ -1,11 +1,11 @@
 const bcrypt = require("bcryptjs");
 const userRepository = require("../repositories/userRepository");
 const {createUserSchema, updateUserSchema} = require("../validations/userValidation");
-const {handleJoiErrorMessage, handleSequelizeError} = require("../utils/general");
+const {handleSequelizeError} = require("../utils/general");
 const {NotFoundError} = require("../exceptions/errors");
-const validator = require("./ValidationService"); // instance
+const validator = require("./validationUsecase"); // instance
 
-class UserService {
+class UserUsecase {
     constructor({validator}) {
         this.validator = validator;
     }
@@ -30,11 +30,7 @@ class UserService {
 
     async createUser(data) {
         // 🔹 Validasi di layer service
-        const {error, value} = this.validator.validateSchema(createUserSchema, data);
-        if (error) {
-            throw handleJoiErrorMessage(error);
-        }
-
+        const value = this.validator.validateSchema(createUserSchema, data);
         // 🔹 Hash password
         const hashedPassword = await bcrypt.hash(value.password, 10);
         const userData = {...value, password_hash: hashedPassword};
@@ -48,10 +44,7 @@ class UserService {
 
     async updateUser(id, data) {
         // 🔹 Validasi dulu
-        const {error, value} = updateUserSchema.validate(data);
-        if (error) {
-            throw handleJoiErrorMessage(error);
-        }
+        const value = updateUserSchema.validate(data);
         // 🔹 Password (optional)
         if (value.password) {
             value.password_hash = await bcrypt.hash(value.password, 10);
@@ -80,4 +73,4 @@ class UserService {
     }
 }
 
-module.exports = new UserService({validator}); // inject dependency sebagai object
+module.exports = new UserUsecase({validator}); // inject dependency sebagai object

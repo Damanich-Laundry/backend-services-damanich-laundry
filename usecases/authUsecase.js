@@ -5,7 +5,7 @@ const {handleJoiErrorMessage} = require("../utils/general");
 const {loginUserSchema} = require("../validations/authValidation");
 const {ValidationError, AuthenticationError, NotFoundError} = require("../exceptions/errors");
 
-class AuthService {
+class AuthUsecase {
     async login({email, password}) {
         const {error, value} = loginUserSchema.validate({email, password}, {abortEarly: false});
         if (error) {
@@ -71,4 +71,4 @@ class AuthService {
     }
 }
 
-module.exports = new AuthService();
+module.exports = new AuthUsecase();

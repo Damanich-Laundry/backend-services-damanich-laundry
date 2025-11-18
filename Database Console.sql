@@ -3,3 +3,5 @@ CREATE DATABASE backend_services_damanich_laundry;
 
 SELECT *
 FROM users;
+SELECT *
+FROM customers;
