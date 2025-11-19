@@ -10,10 +10,10 @@ module.exports = function isStaff(req, res, next) {
       });
     }
 
-    if (user.role !== "staff") {
+    if (user.role !== "staff" && user.role !== "admin") {
       return res.status(403).json({
         status: "Failed",
-        message: "Access denied. Only staff can perform this action.",
+        message: "Access denied. Only staff and admin can perform this action.",
         data: null,
       });
     }

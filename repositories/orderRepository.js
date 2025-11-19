@@ -33,7 +33,7 @@ class OrderRepository {
         const t = await sequelize.transaction();
 
         try {
-            if (!user || user.role !== "staff") {
+            if (!user || user.role !== "staff" && user.role !== "admin") {
                 throw new Error("Only staff can create an order");
             }
 
