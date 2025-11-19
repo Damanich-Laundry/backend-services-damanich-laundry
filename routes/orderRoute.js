@@ -6,6 +6,7 @@ const isStaff = require("../middleware/isStaff");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 router.get("/", authMiddleware, orderController.getAll);
+router.get("/filter", authMiddleware, orderController.getOrdersByDateRange);
 router.get("/search", authMiddleware, asyncHandler(orderController.search));
 router.get("/:id", authMiddleware, orderController.getById);
 router.get(

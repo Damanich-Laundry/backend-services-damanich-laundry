@@ -77,7 +77,6 @@ class AuthUsecase {
   }
 
   async logout() {
-    // Bisa simpan refresh token blacklist di Redis/DB kalau ingin aman.
     return { message: "Logged out successfully" };
   }
 }

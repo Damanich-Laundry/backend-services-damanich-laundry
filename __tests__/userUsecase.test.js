@@ -1,9 +1,8 @@
 const bcrypt = require("bcryptjs");
 const userRepository = require("../repositories/userRepository");
-const userService = require("../services/userService");
 const {createUserSchema, updateUserSchema} = require("../validations/userValidation");
 const {handleJoiErrorMessage} = require("../utils/general");
-
+const userUsecase = require("../usecases/userUsecase");
 // 🔹 Mock semua dependensi eksternal
 jest.mock("../repositories/userRepository");
 jest.mock("bcryptjs");
@@ -35,7 +34,7 @@ describe("UserService", () => {
             userRepository.create.mockResolvedValue(savedUser);
 
             // Act
-            const result = await userService.createUser(dummyInput);
+            const result = await userUsecase.createUser(dummyInput);
 
             // Assert
             expect(createUserSchema.validate).toHaveBeenCalledWith(dummyInput);
@@ -52,7 +51,7 @@ describe("UserService", () => {
             const errorObj = new Error("Validation failed");
             handleJoiErrorMessage.mockReturnValue(errorObj);
 
-            await expect(userService.createUser({})).rejects.toThrow("Validation failed");
+            await expect(userUsecase.createUser({})).rejects.toThrow("Validation failed");
             expect(handleJoiErrorMessage).toHaveBeenCalledWith(joiError);
         });
     });
@@ -63,7 +62,7 @@ describe("UserService", () => {
             const users = [{id: 1}, {id: 2}];
             userRepository.findAll.mockResolvedValue(users);
 
-            const result = await userService.getAllUsers();
+            const result = await userUsecase.getAllUsers();
 
             expect(result).toEqual(users);
             expect(userRepository.findAll).toHaveBeenCalledTimes(1);
@@ -76,13 +75,13 @@ describe("UserService", () => {
             const user = {id: 1, username: "john"};
             userRepository.findById.mockResolvedValue(user);
 
-            const result = await userService.getUserById(1);
+            const result = await userUsecase.getUserById(1);
             expect(result).toEqual(user);
         });
 
         it("should throw error if user not found", async () => {
             userRepository.findById.mockResolvedValue(null);
-            await expect(userService.getUserById(999)).rejects.toThrow("User not found");
+            await expect(userUsecase.getUserById(999)).rejects.toThrow("User not found");
         });
     });
 
@@ -95,7 +94,7 @@ describe("UserService", () => {
             updateUserSchema.validate.mockReturnValue({error: null, value: dummyData});
             userRepository.update.mockResolvedValue(updatedUser);
 
-            const result = await userService.updateUser(1, dummyData);
+            const result = await userUsecase.updateUser(1, dummyData);
 
             expect(updateUserSchema.validate).toHaveBeenCalledWith(dummyData);
             expect(userRepository.update).toHaveBeenCalledWith(1, dummyData);
@@ -105,7 +104,7 @@ describe("UserService", () => {
         it("should throw if user not found on update", async () => {
             updateUserSchema.validate.mockReturnValue({error: null, value: {}});
             userRepository.update.mockResolvedValue(null);
-            await expect(userService.updateUser(99, {})).rejects.toThrow("User not found");
+            await expect(userUsecase.updateUser(99, {})).rejects.toThrow("User not found");
         });
     });
 
@@ -113,13 +112,13 @@ describe("UserService", () => {
     describe("deleteUser", () => {
         it("should delete user successfully", async () => {
             userRepository.delete.mockResolvedValue(true);
-            const result = await userService.deleteUser(1);
+            const result = await userUsecase.deleteUser(1);
             expect(result).toBe(true);
         });
 
         it("should throw if user not found", async () => {
             userRepository.delete.mockResolvedValue(null);
-            await expect(userService.deleteUser(123)).rejects.toThrow("User not found");
+            await expect(userUsecase.deleteUser(123)).rejects.toThrow("User not found");
         });
     });
 });
