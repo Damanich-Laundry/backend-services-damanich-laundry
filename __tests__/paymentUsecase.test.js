@@ -1,7 +1,7 @@
-const PaymentUsecase = require("../../usecases/paymentUsecase");
-const paymentUsecase = new PaymentUsecase();
+const PaymentUsecase = require("../usecases/paymentUsecase");
+const paymentUsecase = PaymentUsecase;
 
-jest.mock("../../repositories/paymentRepository", () => ({
+jest.mock("../repositories/paymentRepository", () => ({
     findAll: jest.fn(),
     findById: jest.fn(),
     findByOrderId: jest.fn(),
@@ -9,7 +9,7 @@ jest.mock("../../repositories/paymentRepository", () => ({
     create: jest.fn(),
 }));
 
-jest.mock("../../models", () => ({
+jest.mock("../models", () => ({
     Order: {
         findByPk: jest.fn(),
     },
@@ -20,16 +20,16 @@ jest.mock("sequelize", () => ({
 }));
 
 // Mock validation
-jest.mock("../../validations/paymentValidation", () => ({
+jest.mock("../validations/paymentValidation", () => ({
     createPaymentSchema: {validate: jest.fn()},
     updatePaymentSchema: {validate: jest.fn()},
 }));
 
 
 // Import mocks
-const paymentRepository = require("../../repositories/paymentRepository");
-const {Order} = require("../../models");
-const {createPaymentSchema, updatePaymentSchema} = require("../../validations/paymentValidation");
+const paymentRepository = require("../repositories/paymentRepository");
+const {Order} = require("../models");
+const {createPaymentSchema, updatePaymentSchema} = require("../validations/paymentValidation");
 
 describe("PaymentUsecase", () => {
     beforeEach(() => jest.clearAllMocks());

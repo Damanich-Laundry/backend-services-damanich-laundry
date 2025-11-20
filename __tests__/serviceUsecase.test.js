@@ -1,7 +1,7 @@
-const ServiceUsecase = require("../../usecases/serviceUsecase");
-const serviceUsecase = new ServiceUsecase();
+const ServiceUsecase = require("../usecases/serviceUsecase");
+const serviceUsecase = ServiceUsecase
 
-jest.mock("../../repositories/serviceRepository", () => ({
+jest.mock("../repositories/serviceRepository", () => ({
     findAll: jest.fn(),
     findById: jest.fn(),
     create: jest.fn(),
@@ -10,21 +10,21 @@ jest.mock("../../repositories/serviceRepository", () => ({
     updateStatus: jest.fn(),
 }));
 
-jest.mock("../../validations/serviceValidation", () => ({
+jest.mock("../validations/serviceValidation", () => ({
     createServiceScheme: {validate: jest.fn()},
     updateServiceScheme: {validate: jest.fn()},
 }));
 
-jest.mock("../../utils/general", () => ({
+jest.mock("../utils/general", () => ({
     handleJoiErrorMessage: jest.fn((e) => new Error(e.message || "Validation error")),
 }));
 
-const servicerRepository = require("../../repositories/serviceRepository");
+const servicerRepository = require("../repositories/serviceRepository");
 const {
     createServiceScheme,
     updateServiceScheme,
-} = require("../../validations/serviceValidation");
-const {handleJoiErrorMessage} = require("../../utils/general");
+} = require("../validations/serviceValidation");
+const {handleJoiErrorMessage} = require("../utils/general");
 
 describe("ServiceUsecase", () => {
 

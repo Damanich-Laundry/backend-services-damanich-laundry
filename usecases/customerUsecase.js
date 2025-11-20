@@ -1,9 +1,7 @@
-const bcrypt = require("bcryptjs");
 const customerRepository = require("../repositories/customerRepository");
 const {createCustomerSchema, updateCustomerSchema} = require("../validations/customerValidation");
 const {handleJoiErrorMessage} = require("../utils/general");
 const {NotFoundError} = require("../exceptions/errors");
-const validator = require("./validationUsecase"); // instance
 
 class CustomerUsecase {
     constructor({validator}) {
@@ -48,4 +46,4 @@ class CustomerUsecase {
     }
 }
 
-module.exports = new CustomerUsecase({validator});
+module.exports = CustomerUsecase;

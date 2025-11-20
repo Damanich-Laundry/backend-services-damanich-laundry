@@ -23,7 +23,7 @@ class UserUsecase {
     async getProfile(userId) {
         const user = await userRepository.findById(userId);
         if (!user) {
-            throw NotFoundError("User not found");
+            throw new NotFoundError("User not found");
         }
         return user;
     }

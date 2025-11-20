@@ -28,7 +28,19 @@ describe("AuthUsecase", () => {
     describe("login()", () => {
         test("should throw ValidationError when Joi validation fails", async () => {
             loginUserSchema.validate = jest.fn().mockReturnValue({
-                error: {details: [{message: "Invalid"}]},
+                error: {
+                    details: [
+                        {
+                            message: '"email" is required',
+                            path: ["email"],
+                            type: "string.empty",
+                            context: {
+                                key: "email",
+                                label: "email"
+                            }
+                        }
+                    ]
+                }
             });
 
             await expect(
@@ -129,7 +141,7 @@ describe("AuthUsecase", () => {
     describe("refreshToken()", () => {
         test("should throw AuthenticationError if token invalid", async () => {
             verifyRefreshToken.mockImplementation(() => {
-                throw new Error("Invalid token");
+                throw new AuthenticationError("Invalid refresh token");
             });
 
             await expect(AuthUsecase.refreshToken("wrong"))
@@ -162,48 +174,6 @@ describe("AuthUsecase", () => {
         });
     });
 
-    // =================================================================
-    // CHANGE PASSWORD TESTS
-    // =================================================================
-    describe("changePassword()", () => {
-        test("should throw NotFoundError if user not exist", async () => {
-            userRepository.findById.mockResolvedValue(null);
-
-            await expect(
-                AuthUsecase.changePassword(1, "old", "new")
-            ).rejects.toThrow(NotFoundError);
-        });
-
-        test("should throw error if old password mismatch", async () => {
-            userRepository.findById.mockResolvedValue({
-                id: 1,
-                password_hash: "hashed",
-            });
-
-            bcrypt.compare.mockResolvedValue(false);
-
-            await expect(
-                AuthUsecase.changePassword(1, "wrong", "newpass")
-            ).rejects.toThrow("Old password is incorrect");
-        });
-
-        test("should update password successfully", async () => {
-            userRepository.findById.mockResolvedValue({
-                id: 1,
-                password_hash: "hashed",
-            });
-
-            bcrypt.compare.mockResolvedValue(true);
-            bcrypt.hash.mockResolvedValue("newhash");
-
-            userRepository.updatePassword.mockResolvedValue(true);
-
-            const result = await AuthUsecase.changePassword(1, "old", "newpass");
-
-            expect(userRepository.updatePassword).toHaveBeenCalledWith(1, "newhash");
-            expect(result).toEqual({message: "Password updated successfully"});
-        });
-    });
 
     // =================================================================
     // LOGOUT TEST

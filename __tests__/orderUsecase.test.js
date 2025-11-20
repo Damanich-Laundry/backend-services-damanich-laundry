@@ -1,7 +1,7 @@
-const orderUsecase = require("../../usecases/orderUsecase");
+const orderUsecase = require("../usecases/orderUsecase");
 
 // Mock repository
-jest.mock("../../repositories/orderRepository", () => ({
+jest.mock("../repositories/orderRepository", () => ({
     findAll: jest.fn(),
     findById: jest.fn(),
     createOrder: jest.fn(),
@@ -12,14 +12,19 @@ jest.mock("../../repositories/orderRepository", () => ({
     searchOrders: jest.fn(),
     getOrdersByDateRange: jest.fn(),
 }));
+jest.mock("../validations/orderValidation", () => ({
+    createOrderSchema: {
+        validate: jest.fn(() => ({error: null, value: {total_amount: 100, customer_id: 1}}))
+    }
+}));
 
-jest.mock("../../repositories/userRepository", () => ({
+jest.mock("../repositories/userRepository", () => ({
     findById: jest.fn(),
 }));
 
 // Import mocks
-const orderRepository = require("../../repositories/orderRepository");
-const userRepository = require("../../repositories/userRepository");
+const orderRepository = require("../repositories/orderRepository");
+const userRepository = require("../repositories/userRepository");
 
 describe("OrderUsecase", () => {
 
@@ -55,7 +60,7 @@ describe("OrderUsecase", () => {
         userRepository.findById.mockResolvedValue(null);
 
         await expect(
-            orderUsecase.createOrder(1, {total_amount: 100})
+            orderUsecase.createOrder(1, {total_amount: 100, customer_id: 1})
         ).rejects.toThrow("User not found");
     });
 
@@ -63,21 +68,10 @@ describe("OrderUsecase", () => {
         userRepository.findById.mockResolvedValue({id: 1});
         orderRepository.createOrder.mockResolvedValue({id: 99});
 
-        const mockData = {
-            total_amount: 100,
-            customer_id: 1,
-        };
+        const result = await orderUsecase.createOrder(1, {total_amount: 100, customer_id: 1});
 
-        // Bypass Joi with mock (untuk mempermudah unit test)
-        jest.spyOn(require("../../validations/orderValidation"), "createOrderSchema", "get")
-            .mockReturnValue({
-                validate: () => ({error: null})
-            });
-
-        const result = await orderUsecase.createOrder(1, mockData);
-
-        expect(result).toEqual({id: 99});
         expect(orderRepository.createOrder).toHaveBeenCalled();
+        expect(result).toEqual({id: 99});
     });
 
     // ======================================================
